@@ -59,7 +59,20 @@ final class Zaxiom_Plugin {
 	/**
 	 * Constructor method.
 	 */
-	private function __construct() {}
+	private function __construct() {
+		add_action( 'wp_enqueue_scripts', array( $this , 'register_idies_sortable_script' ) );
+
+		add_shortcode( 'IDIES_SORTABLE' , array( $this , 'idies_sortable' ) );
+	}
+	
+	function register_idies_sortable_script() {
+		wp_register_script( 'idies-sortable', $this->js_uri . "idies-sortable.js", array( 'jquery' ), '1.0.0', true );
+	}
+
+	public function idies_sortable( $atts, $content = null, $tagname = null ) {
+		wp_enqueue_script( 'idies-sortable' );
+		return '';
+	}
 
 	/**
 	 * Magic method to output a string if trying to use the object as a string.
