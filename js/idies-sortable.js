@@ -25,33 +25,39 @@
 			
 			// set global completed to false
 			Sortable.completed = false;
-			Sortable.toggles = new Array();
-			Sortable.targets = new Array();
+			Sortable.sortby = new Array();
+			Sortable.contents = new Array();
 			
-			// get all the sortable toggles
+			// get all the sortable keys
 			$("[data-toggle=sortable]").each ( function() {
-				Sortable.toggles.push( {key:$(this).data("sortable-target") , label:$(this).text() } );
+				Sortable.sortby.push( $(this).data("sortable-by") );
 			});
 			
-			// get the contents of the targets
-			$(".data-sortable-target").each ( function() {
-				Sortable.targets.push( $(this).html() );
+			// get the contents of the sortby's
+			var i=0;
+			var tmp_sortable={};
+			var sortable;
+			$(".data-sortable-by").each ( function() {
+				sortable = this;
+				tmp_sortable["dflt"]= i++ ;
+				tmp_sortable["html"] = $(this).html() ;
+				Sortable.sortby.forEach( function( item , index ){
+					tmp_sortable[ item ] = ( $( "[data-sortable-by-" + item + "]" , sortable ).length  == 0 ) ? "" : $("[data-sortable-by-" + item + "]" , sortable).data("sortable-by-" + item);
+				});
+				Sortable.contents.push( tmp_sortable ) ;
+				tmp_sortable={};
 			});
-			console.log(Sortable.targets);
-			
 			
 			// set completed to true
 			Sortable.completed=true;
 			
 		},
 		
-		// Show targets that have controls Checked.
 		update: function( b ){
 		
 
 		},
 		
-		// reset the menu count of shown elements
 		reset: function( c ){
 			
 		

@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: IDIES Sortable Core Plugin
+Plugin Name: Zaxiom Core Plugin
 Plugin URI: http://zendgame.ocm
-Description: A plugin that sorts the order of elements by different criteria.
+Description: The core plugin with Ajax capabilities
 Version: 1.0
 Author: Bonnie Souter
 Author URI: http://zendgame.com
@@ -29,7 +29,7 @@ License: GPLv2
  * Singleton class for setting up the plugin.
  *
  */
-final class IDIES_Sortable_Plugin {
+final class Zaxiom_Plugin {
 
 	public $dir_path = '';
 	public $dir_uri = '';
@@ -47,7 +47,7 @@ final class IDIES_Sortable_Plugin {
 		static $instance = null;
 
 		if ( is_null( $instance ) ) {
-			$instance = new IDIES_Sortable_Plugin;
+			$instance = new Zaxiom_Plugin;
 			$instance->setup();
 			$instance->includes();
 			$instance->setup_actions();
@@ -78,28 +78,28 @@ final class IDIES_Sortable_Plugin {
 	 * Magic method to output a string if trying to use the object as a string.
 	 */
 	public function __toString() {
-		return 'idies_sortable';
+		return 'zaxiom';
 	}
 
 	/**
 	 * Magic method to keep the object from being cloned.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'idies_sortable' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'zaxiom' ), '1.0' );
 	}
 
 	/**
 	 * Magic method to keep the object from being unserialized.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'idies_sortable' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'zaxiom' ), '1.0' );
 	}
 
 	/**
 	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
 	 */
 	public function __call( $method = '', $args = array() ) {
-		_doing_it_wrong( "IDIES_Sortable_Plugin::{$method}", esc_html__( 'Method does not exist.', 'idies_sortable' ), '1.0' );
+		_doing_it_wrong( "Zaxiom_Plugin::{$method}", esc_html__( 'Method does not exist.', 'zaxiom' ), '1.0' );
 		unset( $method, $args );
 		return null;
 	}
@@ -172,12 +172,12 @@ final class IDIES_Sortable_Plugin {
 }
 
 /**
- * Gets the instance of the `IDIES_Sortable_Plugin` class.  This function is useful for quickly grabbing data
+ * Gets the instance of the `Zaxiom_Plugin` class.  This function is useful for quickly grabbing data
  * used throughout the plugin.
  */
-function idies_sortable_plugin() {
-	return IDIES_Sortable_Plugin::get_instance();
+function zaxiom_plugin() {
+	return Zaxiom_Plugin::get_instance();
 }
 
 // Let's roll!
-idies_sortable_plugin();
+zaxiom_plugin();
