@@ -1,8 +1,9 @@
 <?php
 /*
-Plugin Name: IDIES Sortable Core Plugin
+Plugin Name: Sortablz 
 Plugin URI: http://zendgame.ocm
-Description: A plugin that sorts the order of elements by different criteria.
+Description: A Zendgame WordPress Plugin that sorts HTML elements with AJAX.
+	Works with divs, rather than table columns.
 Version: 1.0
 Author: Bonnie Souter
 Author URI: http://zendgame.com
@@ -29,7 +30,7 @@ License: GPLv2
  * Singleton class for setting up the plugin.
  *
  */
-final class IDIES_Sortable_Plugin {
+final class Sortablz_Plugin {
 
 	public $dir_path = '';
 	public $dir_uri = '';
@@ -47,7 +48,7 @@ final class IDIES_Sortable_Plugin {
 		static $instance = null;
 
 		if ( is_null( $instance ) ) {
-			$instance = new IDIES_Sortable_Plugin;
+			$instance = new Sortablz_Plugin;
 			$instance->setup();
 			$instance->includes();
 			$instance->setup_actions();
@@ -60,17 +61,17 @@ final class IDIES_Sortable_Plugin {
 	 * Constructor method.
 	 */
 	private function __construct() {
-		add_action( 'wp_enqueue_scripts', array( $this , 'register_idies_sortable_script' ) );
+		add_action( 'wp_enqueue_scripts', array( $this , 'register_sortablz_script' ) );
 
-		add_shortcode( 'IDIES_SORTABLE' , array( $this , 'idies_sortable' ) );
+		add_shortcode( 'SORTABLZ' , array( $this , 'sortablz' ) );
 	}
 	
-	function register_idies_sortable_script() {
-		wp_register_script( 'idies-sortable', $this->js_uri . "idies-sortable.js", array( 'jquery' ), '1.0.0', true );
+	function register_sortablz_script() {
+		wp_register_script( 'sortablz', $this->js_uri . "sortablz.js", array( 'jquery' ), '1.0.0', true );
 	}
 
-	public function idies_sortable( $atts, $content = null, $tagname = null ) {
-		wp_enqueue_script( 'idies-sortable' );
+	public function sortablz( $atts, $content = null, $tagname = null ) {
+		wp_enqueue_script( 'sortablz' );
 		return '';
 	}
 
@@ -78,28 +79,28 @@ final class IDIES_Sortable_Plugin {
 	 * Magic method to output a string if trying to use the object as a string.
 	 */
 	public function __toString() {
-		return 'idies_sortable';
+		return 'sortablz';
 	}
 
 	/**
 	 * Magic method to keep the object from being cloned.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'idies_sortable' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'sortablz' ), '1.0' );
 	}
 
 	/**
 	 * Magic method to keep the object from being unserialized.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'idies_sortable' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'sortablz' ), '1.0' );
 	}
 
 	/**
 	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
 	 */
 	public function __call( $method = '', $args = array() ) {
-		_doing_it_wrong( "IDIES_Sortable_Plugin::{$method}", esc_html__( 'Method does not exist.', 'idies_sortable' ), '1.0' );
+		_doing_it_wrong( "Sortablz_Plugin::{$method}", esc_html__( 'Method does not exist.', 'sortablz' ), '1.0' );
 		unset( $method, $args );
 		return null;
 	}
@@ -172,12 +173,12 @@ final class IDIES_Sortable_Plugin {
 }
 
 /**
- * Gets the instance of the `IDIES_Sortable_Plugin` class.  This function is useful for quickly grabbing data
+ * Gets the instance of the `Sortablz_Plugin` class.  This function is useful for quickly grabbing data
  * used throughout the plugin.
  */
-function idies_sortable_plugin() {
-	return IDIES_Sortable_Plugin::get_instance();
+function sortablz_plugin() {
+	return Sortablz_Plugin::get_instance();
 }
 
 // Let's roll!
-idies_sortable_plugin();
+sortablz_plugin();
