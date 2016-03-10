@@ -1,0 +1,18 @@
+ {
+  "name": "zaxiom",
+  "version": "1.0.0",
+  "homepage": "//zendgame.com",
+  "authors": [
+    "Bonnie Souter <bonnie@zendgame.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "vendor"
+  ],
+  "dependencies": {
+    "jquery": "1.11.1"
+  }
+}

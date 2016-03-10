@@ -3,12 +3,12 @@
 Plugin Name: Zaxiom Core Plugin
 Plugin URI: http://zendgame.ocm
 Description: The core plugin with Ajax capabilities
-Version: 1.0
+Version: 1.0.1
 Author: Bonnie Souter
 Author URI: http://zendgame.com
 License: GPLv2
-*/
-/*  Copyright 2015 Bonnie Souter  (email : bonnie@zendgame.com)
+
+    Copyright 2015 Bonnie Souter  (email : bonnie@zendgame.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,7 +59,36 @@ final class Zaxiom_Plugin {
 	/**
 	 * Constructor method.
 	 */
-	private function __construct() {}
+	private function __construct() {
+		
+		//Add Scripts
+		//add_action( 'wp_enqueue_scripts', array( $this , 'register_zaxiom_script' ) );
+		
+		//Add Shortcodes
+		//add_shortcode( 'ZAXIOM' , array( $this , 'zaxiom_shortcode' ) );	
+	}
+
+	//
+	function register_zaxiom_script() {
+		
+		//Register, but don't enqueue styles
+		//This example requires jquery 
+		//wp_register_script( 'zz-script', $this->js_uri . "zaxiom.js", array( 'jquery' ), '1.0.0', true );
+		
+		//Register but don't enqueue scripts
+		//wp_register_style( 'zz-style', $this->css_uri . "zaxiom.css" );
+	}
+
+	public function zaxiom_shortcode( $atts, $content = null, $tagname = null ) {
+
+		//Shortcode loads scripts and styles
+		//wp_enqueue_script( 'zz-script' );
+		//wp_enqueue_style( 'zz-style' );
+		
+		//Content is unchanged
+		
+		return '';
+	}
 
 	/**
 	 * Magic method to output a string if trying to use the object as a string.
@@ -128,7 +157,7 @@ final class Zaxiom_Plugin {
 		// Load template files.
 		//require_once( $this->lib_dir . 'template.php' );
 
-		// Load admin files.
+		// Load admin/backend files.
 		if ( is_admin() ) {
 
 			// General admin functions.
