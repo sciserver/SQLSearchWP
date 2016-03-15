@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Zaxiom Core Plugin
+Plugin Name: Axiomz Core Plugin
 Plugin URI: http://zendgame.ocm
 Description: The core plugin with Ajax capabilities
-Version: 1.0.1
+Version: 1.0.2
 Author: Bonnie Souter
 Author URI: http://zendgame.com
 License: GPLv2
@@ -29,7 +29,7 @@ License: GPLv2
  * Singleton class for setting up the plugin.
  *
  */
-final class Zaxiom_Plugin {
+final class Axiomz_Plugin {
 
 	public $dir_path = '';
 	public $dir_uri = '';
@@ -47,7 +47,7 @@ final class Zaxiom_Plugin {
 		static $instance = null;
 
 		if ( is_null( $instance ) ) {
-			$instance = new Zaxiom_Plugin;
+			$instance = new Axiomz_Plugin;
 			$instance->setup();
 			$instance->includes();
 			$instance->setup_actions();
@@ -62,24 +62,80 @@ final class Zaxiom_Plugin {
 	private function __construct() {
 		
 		//Add Scripts
-		//add_action( 'wp_enqueue_scripts', array( $this , 'register_zaxiom_script' ) );
+		//add_action( 'wp_enqueue_scripts', array( $this , 'register_axiomz_script' ) );
 		
 		//Add Shortcodes
-		//add_shortcode( 'ZAXIOM' , array( $this , 'zaxiom_shortcode' ) );	
+		//add_shortcode( 'AXIOMZ' , array( $this , 'axiomz_shortcode' ) );
+		
+		//Add page(s) to the Admin Menu
+		add_action( 'admin_menu' , array( $this , 'bb_zx_menu' ) );
+
 	}
+	
+	 /**
+	 * Add shortcodes menu
+	**/
+	function bb_zx_menu() {
+
+		// Add a submenu item and page to Tools 
+		add_management_page( 'Axiomz Tools Menu', 'Axiomz Tools Menu Title', 'export', 'bb-zx-tools-page' , array( $this , 'bb_zx_tools_page' ) );
+
+		// Add submenu items to other pages
+		// Dashboard 
+		//add_dashboard_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Posts 
+		//add_posts_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Media 
+		//add_media_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Pages 
+		//add_pages_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Comments 
+		//add_comments_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Appearance 
+		//add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Plugins 
+		//add_plugins_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Users 
+		//add_users_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Settings 
+		//add_options_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+
+		// Add top level page to admin menu & add submenu item to it
+		//add_menu_page('Page title', 'Top-level menu title', 'manage_options', 'my-top-level-handle', 'my_magic_function');
+		//add_submenu_page( 'my-top-level-handle', 'Page title', 'Sub-menu title', 'manage_options', 'my-submenu-handle', 'my_magic_function');		
+		
+	}
+
+	/**
+	 * Add shortcodes page
+	**/
+	function bb_zx_tools_page() {
+		
+		if ( !current_user_can( 'export' ) )  {
+				wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+		}
+		echo '<div class="wrap">';
+		echo '<h2>Axiomz Toolz</h2>';
+		echo '</div>';	}
+
 
 	//
-	function register_zaxiom_script() {
+	function register_axiomz_script() {
 		
-		//Register, but don't enqueue styles
+		//Scripts to be Registered, but not enqueued
 		//This example requires jquery 
-		//wp_register_script( 'zz-script', $this->js_uri . "zaxiom.js", array( 'jquery' ), '1.0.0', true );
+		//wp_register_script( 'zz-script', $this->js_uri . "axiomz.js", array( 'jquery' ), '1.0.0', true );
 		
-		//Register but don't enqueue scripts
-		//wp_register_style( 'zz-style', $this->css_uri . "zaxiom.css" );
+		//Styles to be Registered, but not enqueued
+		//wp_register_style( 'zz-style', $this->css_uri . "axiomz.css" );
+		
+		//Scripts and Styles to be Enqueued on every page.
+		//wp_enqueue_script( 'zz-script' );
+		//wp_enqueue_style( 'zz-style' );
+
 	}
 
-	public function zaxiom_shortcode( $atts, $content = null, $tagname = null ) {
+	public function axiomz_shortcode( $atts, $content = null, $tagname = null ) {
 
 		//Shortcode loads scripts and styles
 		//wp_enqueue_script( 'zz-script' );
@@ -94,28 +150,28 @@ final class Zaxiom_Plugin {
 	 * Magic method to output a string if trying to use the object as a string.
 	 */
 	public function __toString() {
-		return 'zaxiom';
+		return 'axiomz';
 	}
 
 	/**
 	 * Magic method to keep the object from being cloned.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'zaxiom' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'axiomz' ), '1.0' );
 	}
 
 	/**
 	 * Magic method to keep the object from being unserialized.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'zaxiom' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Sorry, no can do.', 'axiomz' ), '1.0' );
 	}
 
 	/**
 	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
 	 */
 	public function __call( $method = '', $args = array() ) {
-		_doing_it_wrong( "Zaxiom_Plugin::{$method}", esc_html__( 'Method does not exist.', 'zaxiom' ), '1.0' );
+		_doing_it_wrong( "Axiomz_Plugin::{$method}", esc_html__( 'Method does not exist.', 'axiomz' ), '1.0' );
 		unset( $method, $args );
 		return null;
 	}
@@ -188,12 +244,12 @@ final class Zaxiom_Plugin {
 }
 
 /**
- * Gets the instance of the `Zaxiom_Plugin` class.  This function is useful for quickly grabbing data
+ * Gets the instance of the `Axiomz_Plugin` class.  This function is useful for quickly grabbing data
  * used throughout the plugin.
  */
-function zaxiom_plugin() {
-	return Zaxiom_Plugin::get_instance();
+function axiomz_plugin() {
+	return Axiomz_Plugin::get_instance();
 }
 
 // Let's roll!
-zaxiom_plugin();
+axiomz_plugin();

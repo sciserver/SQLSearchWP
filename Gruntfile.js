@@ -8,7 +8,7 @@ module.exports = function(grunt) {
   require('time-grunt')(grunt);
 
   var jsFileList = [
-    'js/zaxiom.js'
+    'js/axiomz.js'
   ];
 
   grunt.initConfig({
@@ -30,8 +30,8 @@ module.exports = function(grunt) {
     less: {
       dev: {
         files: {
-          'css/zaxiom.css': [
-            'less/zaxiom.less'
+          'css/axiomz.css': [
+            'less/axiomz.less'
           ]
         },
         options: {
@@ -40,8 +40,8 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'css/zaxiom.min.css': [
-            'less/zaxiom.less'
+          'css/axiomz.min.css': [
+            'less/axiomz.less'
           ]
         },
         options: {
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [jsFileList],
-        dest: 'js/_zaxiom.js',
+        dest: 'js/_axiomz.js',
       },
     },
     
@@ -70,7 +70,7 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         files: {
-          'js/zaxiom.min.js': [jsFileList]
+          'js/axiomz.min.js': [jsFileList]
         }
       }
     },
@@ -91,10 +91,10 @@ module.exports = function(grunt) {
 					prev: 'css/'
 				  }
 			},
-			src: 'css/zaxiom.css'
+			src: 'css/axiomz.css'
 		},
 		build: {
-			src: 'css/zaxiom.min.css'
+			src: 'css/axiomz.min.css'
 		}
 	},
 
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
     watch: {
       less: {
         files: [
-          'less/zaxiom.less'
+          'less/axiomz.less'
         ],
         tasks: ['less:dev', 'postcss:dev']
       },
