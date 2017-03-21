@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Axiomz Core Plugin
-Plugin URI: http://zendgame.ocm
-Description: The core plugin with Ajax capabilities
+Plugin URI: http://zendgame.com
+Description: Skeleton WordPress plugin using JavaScript
 Version: 1.0.2
 Author: Bonnie Souter
 Author URI: http://zendgame.com
 License: GPLv2
 
-    Copyright 2015 Bonnie Souter  (email : bonnie@zendgame.com)
+    Copyright 2015-7 Bonnie Souter  (email : bonnie@zendgame.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
