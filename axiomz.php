@@ -81,16 +81,21 @@ final class Axiomz_Plugin {
 		add_management_page( 'Axiomz Tools Menu', 'Axiomz Tools Menu Title', 'export', 'bb-zx-tools-page' , array( $this , 'bb_zx_tools_page' ) );
 
 		// Add submenu items to other pages
+		
 		// Dashboard 
 		//add_dashboard_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		
 		// Posts 
 		//add_posts_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		
 		// Media 
 		//add_media_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
 		// Pages 
 		//add_pages_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
 		// Comments 
 		//add_comments_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
+		// Tools
+		//add_management_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
 		// Appearance 
 		//add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
 		// Plugins 
@@ -101,8 +106,8 @@ final class Axiomz_Plugin {
 		//add_options_page( $page_title, $menu_title, $capability, $menu_slug, $function); 
 
 		// Add top level page to admin menu & add submenu item to it
-		//add_menu_page('Page title', 'Top-level menu title', 'manage_options', 'my-top-level-handle', 'my_magic_function');
-		//add_submenu_page( 'my-top-level-handle', 'Page title', 'Sub-menu title', 'manage_options', 'my-submenu-handle', 'my_magic_function');		
+		//add_menu_page( $page_title , $menu_title , $capability , $menu_slug , $function);
+		//add_submenu_page( $menu_slug, $page_title , $sub_menu_title , $capability , $sub_menu_slug, $function);
 		
 	}
 
