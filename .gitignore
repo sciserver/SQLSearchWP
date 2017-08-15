@@ -2,12 +2,7 @@
 # Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
 .ht*
 wp-config.php
-
-# These are used in building and minimizing with Grunt
-node_modules
-//vendor/*
-//css/*.css.map
-//manifest.json
+sqls-config.php
 
 # Compiled source #
 ###################

@@ -1,9 +1,9 @@
  {
-  "name": "axiomz",
-  "version": "1.0.2",
-  "homepage": "//zendgame.com",
+  "name": "sqlsearchwp",
+  "version": "1.0.0",
+  "homepage": "http://voyages.sdss.org",
   "authors": [
-    "Bonnie Souter <bonnie@zendgame.com>"
+    "Bonnie Souter <bsouter@jhu.edu>"
   ],
   "license": "MIT",
   "private": true,
@@ -13,6 +13,7 @@
     "vendor"
   ],
   "dependencies": {
-    "jquery": "1.11.1"
+    "jquery": "1.11.1",
+    "popper": "1.11.1"
   }
 }

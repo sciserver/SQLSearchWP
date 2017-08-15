@@ -1,11 +1,11 @@
 {
-  "name": "axiomz",
-  "version": "1.0.2",
-  "author": "Bonnie Souter <bonnie@zendgame.com>",
-  "homepage": "//zendgame.com",
+  "name": "sqlsearchwp",
+  "version": "1.0.0",
+  "author": "Bonnie Souter <bsouter@jhu.edu>",
+  "homepage": "http://voyages.sdss.org",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bonbons0220/axiomz.git"
+    "url": "git://github.com/sciserver/sqlsearchwp.git"
   },
   "licenses": [
     {

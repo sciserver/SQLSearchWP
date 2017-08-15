@@ -8,7 +8,7 @@ module.exports = function(grunt) {
   require('time-grunt')(grunt);
 
   var jsFileList = [
-    'js/axiomz.js'
+    'js/sqlsearchwp.js'
   ];
 
   grunt.initConfig({
@@ -30,8 +30,8 @@ module.exports = function(grunt) {
     less: {
       dev: {
         files: {
-          'css/axiomz.css': [
-            'less/axiomz.less'
+          'css/sqlsearchwp.css': [
+            'less/sqlsearchwp.less'
           ]
         },
         options: {
@@ -40,8 +40,8 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'css/axiomz.min.css': [
-            'less/axiomz.less'
+          'css/sqlsearchwp.min.css': [
+            'less/sqlsearchwp.less'
           ]
         },
         options: {
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [jsFileList],
-        dest: 'js/_axiomz.js',
+        dest: 'js/_sqlsearchwp.js',
       },
     },
     
@@ -70,7 +70,7 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         files: {
-          'js/axiomz.min.js': [jsFileList]
+          'js/sqlsearchwp.min.js': [jsFileList]
         }
       }
     },
@@ -91,10 +91,10 @@ module.exports = function(grunt) {
 					prev: 'css/'
 				  }
 			},
-			src: 'css/axiomz.css'
+			src: 'css/sqlsearchwp.css'
 		},
 		build: {
-			src: 'css/axiomz.min.css'
+			src: 'css/sqlsearchwp.min.css'
 		}
 	},
 
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
     watch: {
       less: {
         files: [
-          'less/axiomz.less'
+          'less/sqlsearchwp.less'
         ],
         tasks: ['less:dev', 'postcss:dev']
       },
@@ -119,6 +119,9 @@ module.exports = function(grunt) {
   // Register tasks
   grunt.registerTask('default', [
     'dev'
+  ]);
+  grunt.registerTask('dist', [
+    'build'
   ]);
   grunt.registerTask('dev', [
     'jshint',
