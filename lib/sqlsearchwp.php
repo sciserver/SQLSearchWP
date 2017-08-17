@@ -85,7 +85,7 @@ final class SQLSearchWP {
 		//Scripts to be Registered, but not enqueued. This example requires jquery 
 		wp_register_script( 'sqlsearchwp-script', $this->js_uri . "sqlsearchwp.js", array( 'jquery' ), '1.0.0', true );
 		//wp_register_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.1/esm/popper.js', array( 'jquery' ), false , true );
-		//wp_register_script( 'bootstrap', "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.js", array( 'popper' , 'jquery' ), false , true );
+		//wp_register_script( 'bootstrap', "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.js", array( 'jquery' ), false , true );
 		
 		//Styles to be Registered, but not enqueued
 		wp_register_style( 'sqlsearchwp-style', $this->css_uri . "sqlsearchwp.css" );
@@ -93,43 +93,74 @@ final class SQLSearchWP {
 		
 	}
 
-	public function sqlsearchwp_shortcode( $atts, $content = null, $tagname = null ) {
+	public function sqlsearchwp_shortcode( $atts = array() ) {
 
 		$result='';
 
+		$whichs=array( 'test' , 'prod' );
+		$wheres=array( 'skyserversw' , 'casjobs' , 'odbc' );
+		
+		$webroot = $this->dir_uri;
+		$which = ( !empty( $atts) && array_key_exists( 'which' , $atts ) && 
+			in_array( $atts['which'] , $whichs ) ) ? $atts['which'] : 'test' ; 
+		$where = ( !empty( $atts) && array_key_exists( 'where' , $atts ) && 
+			in_array( $atts['where'] , $wheres ) ) ? $atts['where'] : 'skyserverws' ; 
+		$dataiframe = ( !empty( $atts) && array_key_exists( 'iframe' , $atts ) ) ? 'data-sqls-iframe="true"' : 'data-sqls-iframe="false"' ; 
+		
 		//Shortcode loads scripts and styles
 		wp_enqueue_script( 'sqlsearchwp-script' );
 		//wp_enqueue_script( 'popper' );
 		//wp_enqueue_script( 'bootstrap-script' );
+		
 		wp_enqueue_style( 'sqlsearchwp-style' );
 		wp_enqueue_style( 'bootstrap-style' );
 		
+		//{$foo->bar[1]}
+		
 		//Content 
 		$result .= <<< EOT
-<div class="sqls-messages-wrap">
-<h2>Messages</h2>
+<div id="sqls-container" class="sqls-wrap" data-sqls-webroot="$webroot" data-sqls-which="$which" data-sqls-where="$where" $dataiframe >
+<div class="row">
+<div class="col-lg-12">
+<div class="sqls-messages-wrap card">
+<div class="card-header">Messages</div>
 <div class="sqls-messages"></div>
 </div>
-<div class="sqls-instructions-wrap"> 
+</div>
+<div class="col-xs-12 col-lg-6">
+<div class="sqls-instructions-wrap card"> 
 <h2>Instructions</h2>
 <div class="sqls-instructions"></div> 
 </div>
-<div class="sqls-form-wrap"> 
+<div class="sqls-form-wrap card"> 
 <h2>SQL Search Form</h2>
-<form class="sqls-form">
+<div class="form sqls-form">
+<form id="sqls-form">
+<input type="hidden" name="searchtool" value="SQL">
+<input type="hidden" name="TaskName" value="Skyserver.Search.SQL">
+<input type="hidden" name="syntax" value="Syntax">
+<input type="hidden" name="ReturnHtml" value="true">
+<input type="hidden" name="format" value="html">
+<input type="hidden" name="TableName" value="">
+<textarea id="sqls-query" name="cmd" class="sqls-query" rows=10 cols=60></textarea><br>
+<button id="sqls-submit" name="sqls-submit" class="sqls-submit btn btn-success">Submit</button>
+<button id="sqls-syntax" name="sqls-syntax" class="sqls-syntax btn btn-warning">Check Syntax</button>
+<button id="sqls-reset" name="sqls-reset" class="sqls-reset btn btn-danger">Reset</button>
 </form>
-<div class="sqls-form"></div>
 </div>
-<div class="sqls-results-wrap"> 
+</div>
+</div>
+<div class="col-xs-12 col-lg-6">
+<div class="sqls-results-wrap card"> 
 <h2>SQL Search Results</h2>
-<div class="sqls-results"></div>
+<div class="sqls-results">
+</div>
+</div>
+</div>
+</div>
 </div>
 EOT;
-		$result = '<div id="sqls-container" class="sqls-wrap" ' . 
-		          ' data-sqls-webroot="' . $this->dir_uri . '"' . 
-		          ' data-sqls-which="test"' . 
-				  '>' . $result . '</div>';
-		
+
 		return $result;
 	}
 
