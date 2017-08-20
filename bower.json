@@ -12,8 +12,4 @@
     "node_modules",
     "vendor"
   ],
-  "dependencies": {
-    "jquery": "1.11.1",
-    "popper": "1.11.1"
-  }
 }

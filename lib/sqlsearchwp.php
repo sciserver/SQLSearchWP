@@ -22,6 +22,7 @@ final class SQLSearchWP {
 	//public $templates_dir = '';
 	public $css_uri = '';
 	public $js_uri = '';
+	public $bootstrap_uri = '';
 
 	/**
 	 * Returns the instance.
@@ -83,13 +84,12 @@ final class SQLSearchWP {
 	function register_sqlswp_script() {
 		
 		//Scripts to be Registered, but not enqueued. This example requires jquery 
-		wp_register_script( 'sqlsearchwp-script', $this->js_uri . "sqlsearchwp.js", array( 'jquery' ), '1.0.0', true );
-		//wp_register_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.1/esm/popper.js', array( 'jquery' ), false , true );
-		//wp_register_script( 'bootstrap', "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.js", array( 'jquery' ), false , true );
+		wp_register_script( 'sqlsearchwp-script', $this->js_uri . "sqlsearchwp.js" , array() , '1.0.0', true );
+		wp_register_script( 'bootstrap-min', $this->bootstrap_uri . "bootstrap.min.js" , array( 'jquery' ), false , true );
+		wp_register_script( 'bootstrap', $this->bootstrap_uri . "bootstrap.js" , array( 'jquery' ), false , true );
 		
 		//Styles to be Registered, but not enqueued
 		wp_register_style( 'sqlsearchwp-style', $this->css_uri . "sqlsearchwp.css" );
-		wp_register_style( 'bootstrap-style', $this->css_uri . "bootstrap.min.css" );
 		
 	}
 
@@ -109,11 +109,11 @@ final class SQLSearchWP {
 		
 		//Shortcode loads scripts and styles
 		wp_enqueue_script( 'sqlsearchwp-script' );
-		//wp_enqueue_script( 'popper' );
-		//wp_enqueue_script( 'bootstrap-script' );
-		
 		wp_enqueue_style( 'sqlsearchwp-style' );
-		wp_enqueue_style( 'bootstrap-style' );
+		if ( defined( 'SQLS_DEVELOP' ) && SQLS_DEVELOP ) 
+			wp_enqueue_script( 'bootstrap' );
+		else
+			wp_enqueue_script( 'bootstrap-min' );
 		
 		//{$foo->bar[1]}
 		
@@ -122,19 +122,19 @@ final class SQLSearchWP {
 <div id="sqls-container" class="sqls-wrap" data-sqls-webroot="$webroot" data-sqls-which="$which" data-sqls-where="$where" $dataiframe >
 <div class="row">
 <div class="col-lg-12">
-<div class="sqls-messages-wrap card">
-<div class="card-header">Messages</div>
+<div class="sqls-messages-wrap well">
+<div class="well-header">Messages</div>
 <div class="sqls-messages"></div>
 </div>
 </div>
 <div class="col-xs-12 col-lg-6">
-<div class="sqls-instructions-wrap card"> 
+<div class="sqls-instructions-wrap well"> 
 <h2>Instructions</h2>
 <div class="sqls-instructions"></div> 
 </div>
-<div class="sqls-form-wrap card"> 
+<div id="sqls-form-wrap" class="sqls-form-wrap well"> 
 <h2>SQL Search Form</h2>
-<div class="form sqls-form">
+<div class="form sqls-form collapse show">
 <form id="sqls-form">
 <input type="hidden" name="searchtool" value="SQL">
 <input type="hidden" name="TaskName" value="Skyserver.Search.SQL">
@@ -151,9 +151,9 @@ final class SQLSearchWP {
 </div>
 </div>
 <div class="col-xs-12 col-lg-6">
-<div class="sqls-results-wrap card"> 
+<div class="sqls-results-wrap well"> 
 <h2>SQL Search Results</h2>
-<div class="sqls-results">
+<div id="sqls-results" class="sqls-results collapse">
 </div>
 </div>
 </div>
@@ -211,6 +211,7 @@ EOT;
 		// Plugin directory URIs.
 		$this->css_uri = trailingslashit( $this->dir_uri . 'css' );
 		$this->js_uri  = trailingslashit( $this->dir_uri . 'js'  );
+		$this->bootstrap_uri  = trailingslashit( $this->dir_uri . 'vendor/bootstrap/dist/js'  );
 	}
 
 	/**

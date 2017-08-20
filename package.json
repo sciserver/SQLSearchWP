@@ -2,6 +2,8 @@
   "name": "sqlsearchwp",
   "version": "1.0.0",
   "author": "Bonnie Souter <bsouter@jhu.edu>",
+  "description": "SDSS SQLSearch Plugin for WordPress",
+  "license": "MIT",
   "homepage": "http://voyages.sdss.org",
   "repository": {
     "type": "git",

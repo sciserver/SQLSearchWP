@@ -7,6 +7,7 @@ module.exports = function(grunt) {
   // Show elapsed time
   require('time-grunt')(grunt);
 
+  // All the files to watch and compile
   var jsFileList = [
     'js/sqlsearchwp.js'
   ];
@@ -31,7 +32,7 @@ module.exports = function(grunt) {
       dev: {
         files: {
           'css/sqlsearchwp.css': [
-            'less/sqlsearchwp.less'
+		    'less/sqlsearchwp.less'
           ]
         },
         options: {
@@ -104,7 +105,10 @@ module.exports = function(grunt) {
         files: [
           'less/sqlsearchwp.less'
         ],
-        tasks: ['less:dev', 'postcss:dev']
+        tasks: [
+		  'less:dev',
+		  'postcss:dev'
+	    ]
       },
       js: {
         files: [

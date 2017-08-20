@@ -32,11 +32,11 @@
 			'prod',
 		],
 		
-		wheres: [
-			'skyserverws',
-			'odbc',
-			'casjobs',
-		],
+		wheres: {
+			'skyserverws': 'http://skyserver.sdss.org/dr14/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd='
+			//'odbc',
+			//'casjobs',
+		},
 		
 		query: 
 			{ test:'SELECT TOP 10 '+
@@ -64,7 +64,7 @@
 			this.showMessages( 'Welcome' , 'Please enjoy this form.' , 'info' , false );
 			this.showInstructions( webroot+"includes/" );
 			this.showForm( sqlsearchwp.context );
-			this.showResults( '' , true );
+			this.showResults( '' , false );
 			
 			// Prevent form submitting/reloading page
 			$( sqlsearchwp.context ).on( "submit" , "form#sqls-form" , function( e ){ e.preventDefault(); });
@@ -83,10 +83,9 @@
 		**/
 		doSubmit: function( e ) {
 			
-			var iframe = $( sqlsearchwp.context ).data('sqls-iframe');
+			// Get target db from form data
 			var where = $( sqlsearchwp.context ).data('sqls-where');
-
-			var query = skyserverws +
+			var query = sqlsearchwp.wheres[where] +
 				encodeURI( $( '#sqls-query' ).val() ) +
 				'&syntax=NoSyntax';
 				
@@ -96,7 +95,7 @@
 			xhttp.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
 					var response = this.responseText;
-					sqlsearchwp.showResults( response , true );
+					sqlsearchwp.showResults( response , false );
 				}
 			};
 			xhttp.open("GET", query , true);
@@ -110,10 +109,23 @@
 		 * @param Object e Event Object
 		**/
 		doSyntax: function( e ) {
-			if (SQLSDEBUG) { console.log('check syntax'); }
-			var query = sqlsearchwp.skyserverws +
-				$( '#sqls-query' ).val() +
+			// Get target db from form data
+			var where = $( sqlsearchwp.context ).data('sqls-where');
+			var query = sqlsearchwp.wheres[where] +
+				encodeURI( $( '#sqls-query' ).val() ) +
 				'&syntax=Syntax';
+				
+			//send query from form to skyserverws and listen for return
+			var xhttp;
+			xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState === 4 && this.status === 200) {
+					var response = this.responseText;
+					sqlsearchwp.showResults( response , false );
+				}
+			};
+			xhttp.open("GET", query , true);
+			xhttp.send();
 		},
 		
 		/**
@@ -125,6 +137,7 @@
 			if (SQLSDEBUG) { console.log('reset form'); }
 			// Reset query - don't do this while testing...
 			sqlsearchwp.showForm( sqlsearchwp.context );
+			sqlsearchwp.showResults( '' , false );
 		},
 		
 		/**
@@ -192,7 +205,7 @@
 		showResults: function( results , append ) {
 			var resContainer = $( '.sqls-results' )[0];
 			var resWrapper = $( '.sqls-results-wrap' )[0];
-			
+
 			var contents = ( append !== undefined && append ) ? $(resContainer).html() : '' ;
 			
 			contents += ( results !== undefined ) ? '<div class="sqls-results">'+results+'</div>' : '' ;
