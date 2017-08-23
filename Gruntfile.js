@@ -9,7 +9,20 @@ module.exports = function(grunt) {
 
   // All the files to watch and compile
   var jsFileList = [
-    'js/sqlsearchwp.js'
+    'vendor/bootstrap/js/transition.js',
+    'vendor/bootstrap/js/alert.js',
+    'vendor/bootstrap/js/button.js',
+    //'vendor/bootstrap/js/carousel.js',
+    'vendor/bootstrap/js/collapse.js',
+    'vendor/bootstrap/js/dropdown.js',
+    'vendor/bootstrap/js/modal.js',
+    //'vendor/bootstrap/js/scrollspy.js',
+    'vendor/bootstrap/js/tooltip.js',
+    'vendor/bootstrap/js/popover.js',
+    'vendor/bootstrap/js/tab.js',
+    //'vendor/bootstrap/js/affix.js',
+    //'js/plugins/*.js',
+    'js/_sqlsearchwp.js'
   ];
 
   grunt.initConfig({
@@ -21,8 +34,8 @@ module.exports = function(grunt) {
       },
       all: [
         'Gruntfile.js',
-        'js/*.js',
-        '!js/_*.js',
+        'js/_sqlsearchwp.js',
+        '!js/sqlsearchwp.js',
         '!**/*.min.*'
       ]
     },
@@ -63,7 +76,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [jsFileList],
-        dest: 'js/_sqlsearchwp.js',
+        dest: 'js/sqlsearchwp.js',
       },
     },
     

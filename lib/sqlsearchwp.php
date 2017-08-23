@@ -85,8 +85,8 @@ final class SQLSearchWP {
 		
 		//Scripts to be Registered, but not enqueued. This example requires jquery 
 		wp_register_script( 'sqlsearchwp-script', $this->js_uri . "sqlsearchwp.js" , array() , '1.0.0', true );
-		wp_register_script( 'bootstrap-min', $this->bootstrap_uri . "bootstrap.min.js" , array( 'jquery' ), false , true );
-		wp_register_script( 'bootstrap', $this->bootstrap_uri . "bootstrap.js" , array( 'jquery' ), false , true );
+		//wp_register_script( 'bootstrap-min', $this->bootstrap_uri . "bootstrap.min.js" , array( 'jquery' ), false , true );
+		//wp_register_script( 'bootstrap', $this->bootstrap_uri . "bootstrap.js" , array( 'jquery' ), false , true );
 		
 		//Styles to be Registered, but not enqueued
 		wp_register_style( 'sqlsearchwp-style', $this->css_uri . "sqlsearchwp.css" );
@@ -122,18 +122,17 @@ final class SQLSearchWP {
 <div id="sqls-container" class="sqls-wrap" data-sqls-webroot="$webroot" data-sqls-which="$which" data-sqls-where="$where" $dataiframe >
 <div class="row">
 <div class="col-lg-12">
-<div class="sqls-messages-wrap well">
-<div class="well-header">Messages</div>
+<div class="sqls-messages-wrap">
 <div class="sqls-messages"></div>
 </div>
 </div>
-<div class="col-xs-12 col-lg-6">
+<div class="col-xs-12">
 <div class="sqls-instructions-wrap well"> 
-<h2>Instructions</h2>
-<div class="sqls-instructions"></div> 
+<h2><a role="button" data-toggle="collapse" href="#sqls-instructions" aria-expanded="true" aria-controls="sqls-instructions">Instructions</a></h2>
+<div class="sqls-instructions collapse"></div> 
 </div>
 <div id="sqls-form-wrap" class="sqls-form-wrap well"> 
-<h2>SQL Search Form</h2>
+<h2><a role="button" data-toggle="collapse" href="#sqls-form" aria-expanded="true" aria-controls="sqls-form">SQL Search</a></h2>
 <div class="form sqls-form collapse show">
 <form id="sqls-form">
 <input type="hidden" name="searchtool" value="SQL">
@@ -150,9 +149,9 @@ final class SQLSearchWP {
 </div>
 </div>
 </div>
-<div class="col-xs-12 col-lg-6">
+<div class="col-xs-12">
 <div class="sqls-results-wrap well"> 
-<h2>SQL Search Results</h2>
+<h2><a role="button" data-toggle="collapse" href="#sqls-results" aria-expanded="false" aria-controls="sqls-results">Results</a></h2>
 <div id="sqls-results" class="sqls-results collapse">
 </div>
 </div>

@@ -1,4 +1,13 @@
-/*! sqlsearchwp - v1.0.0 - by:1.0.0 - license: - 2017-08-20 */(function($) {
+/* ========================================================================
+ * sqlsearchwp v1.0.0
+ * ========================================================================
+ *
+ * What it does:
+ * 		Nothing yet...
+ * 
+ * Licensed under MIT 
+ * ======================================================================== */
+(function($) {
 	'use strict';
 
 	// PUBLIC CLASS DEFINITION
@@ -54,8 +63,8 @@
 			// Show the Search Page
 			this.showMessages( 'Welcome' , 'Please enjoy this form.' , 'info' , false );
 			this.showInstructions( webroot+"includes/" );
-			this.showForm( sqlsearchwp.context );
-			this.showResults( '' , false );
+			this.showForm( sqlsearchwp.context , false , true );
+			this.showResults( '' , false , false );
 			
 			// Prevent form submitting/reloading page
 			$( sqlsearchwp.context ).on( "submit" , "form#sqls-form" , function( e ){ e.preventDefault(); });
@@ -73,6 +82,7 @@
 		 * @param Object e Event Object
 		**/
 		doSubmit: function( e ) {
+			if (SQLSDEBUG) { console.log('doSubmit'); }
 			
 			// Get target db from form data
 			var where = $( sqlsearchwp.context ).data('sqls-where');
@@ -86,7 +96,8 @@
 			xhttp.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
 					var response = this.responseText;
-					sqlsearchwp.showResults( response , false );
+					sqlsearchwp.showResults( response , false , true );
+					sqlsearchwp.showForm( '' , true , false );
 				}
 			};
 			xhttp.open("GET", query , true);
@@ -100,6 +111,7 @@
 		 * @param Object e Event Object
 		**/
 		doSyntax: function( e ) {
+			if (SQLSDEBUG) { console.log('doSyntax'); }
 			// Get target db from form data
 			var where = $( sqlsearchwp.context ).data('sqls-where');
 			var query = sqlsearchwp.wheres[where] +
@@ -112,7 +124,8 @@
 			xhttp.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
 					var response = this.responseText;
-					sqlsearchwp.showResults( response , false );
+					sqlsearchwp.showResults( response , false , true );
+					//sqlsearchwp.showForm( '' , true , true );
 				}
 			};
 			xhttp.open("GET", query , true);
@@ -127,8 +140,21 @@
 		doReset: function( e ) {
 			if (SQLSDEBUG) { console.log('reset form'); }
 			// Reset query - don't do this while testing...
-			sqlsearchwp.showForm( sqlsearchwp.context );
-			sqlsearchwp.showResults( '' , false );
+			sqlsearchwp.showResults( '' , false , false );
+			sqlsearchwp.showForm( sqlsearchwp.context , false , true );
+		},
+		
+		doCollapse: function( toggle, container, show ) {
+			$('.collapse').collapse();
+			if ( show === true ) {
+				$(container).collapse('show');
+			} else {
+				$(container).collapse('hide');
+			}
+			/*/
+				$( container ).addClass('collapse in');
+				$( container ).removeClass('in');
+			/*/
 		},
 		
 		/**
@@ -150,9 +176,16 @@
 			var msgLevel = ( ( level !== undefined ) && ( sqlsearchwp.levels.indexOf( level ) >= 0 ) ) ? 'alert-'+level : 'alert-primary' ;
 			
 			// Put Content in alert
-			message += ( title !== undefined ) ? '<h3 class="sqls-msg-title ' + msgLevel + ' ">'+title+'</h3>' : '' ;
-			message += ( msg !== undefined ) ? '<div class="sqls-msg-body ' + msgLevel + ' ">'+msg+'</div>' : '' ;
-			message = '<div class="' + msgLevel + ' sqls-msg">' + message + '</div>';
+			message += ( title !== undefined ) ? 
+				'<h3 class="sqls-msg-title ' + msgLevel + ' ">' + 
+					'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+					title + '</h3>' : 
+				'' ;
+			message += ( msg !== undefined ) ? 
+				'<div class="sqls-msg-body ' + msgLevel + ' ">'+
+					msg + '</div>' : 
+				'' ;
+			message = '<div class="alert ' + msgLevel + ' alert-dismissable sqls-msg" role="alert">' + message + '</div>';
 			$(msgContainer).html( message );
 			
 			// Hide if empty
@@ -178,12 +211,22 @@
 			xhttp.send();
 		},
 		
-		showForm: function( context ) {
+		showForm: function( context , append , show ) {
+			var container = $( '#sqls-form' );
 			
-			var formContainer = $( '.sqls-form' )[0];
-			var formWrapper = $( '.sqls-form-wrap' )[0];
+			var contents = ( append !== undefined && append ) ? $(container).html() : '' ;
+			
 			var query = sqlsearchwp.query[ $( context ).data('sqls-which') ];
+			
 			$( '#sqls-query' ).prop( 'value' , query );
+			/*/
+			if ( show === true ) {
+				$( container ).addClass('collapse in');
+			} else {
+				$( container ).removeClass('in');
+			}
+			/*/
+			sqlsearchwp.doCollapse( '#sqls-form-wrap>h2>a:[data-toggle]', container, show );
 			
 		},
 		
@@ -193,14 +236,21 @@
 		 * @param String $results Results to display
 		 * @param Boolean $append Append or replace current message(s)
 		**/
-		showResults: function( results , append ) {
-			var resContainer = $( '.sqls-results' )[0];
-			var resWrapper = $( '.sqls-results-wrap' )[0];
+		showResults: function( results , append , show ) {
+			var container = $( '#sqls-results' );
 
-			var contents = ( append !== undefined && append ) ? $(resContainer).html() : '' ;
+			var contents = ( append !== undefined && append ) ? $(container).html() : '' ;
 			
-			contents += ( results !== undefined ) ? '<div class="sqls-results">'+results+'</div>' : '' ;
-			$(resContainer).html( contents );			
+			contents += ( results !== undefined ) ? results : '' ;
+			$(container).html( contents );
+			/*/
+			if ( show ) {
+				$( container ).addClass('collapse in');
+			} else {
+				$( container ).removeClass('in');
+			}
+			/*/
+			sqlsearchwp.doCollapse( '#sqls-results-wrap>h2>a:[data-toggle]', container, show );
 		},
 	};
 

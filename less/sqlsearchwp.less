@@ -7,13 +7,33 @@
 @import "../vendor/bootstrap/less/bootstrap.less";
 
 .sqls-wrap{
+	a.collapsed[data-toggle="collapse"]:before {
+		content: "\e081";
+	}
+	a[data-toggle="collapse"]:before {
+		font-family: 'Glyphicons Halflings';
+		content: "\e082";
+		float: left;
+		padding-right: 15px;
+	}
+	a[data-toggle="collapse"]:before {
+		font-family: 'Glyphicons Halflings';
+		content: "\e082";
+		float: left;
+		padding-right: 15px;
+		& .collapsed {
+			content: "\e081";
+		}
+	}
 	.sqls-messages{
-		color: #666666;
-		font-weight: bold;
+		margin-bottom: 10px;
 	}
 	.sqls-instructions{
 	}
 	.sqls-form{
+	}
+	.sqls-results-wrap.well {
+		overflow-x: scroll;
 	}
 	.sqls-results{
 	}
