@@ -98,14 +98,17 @@ final class SQLSearchWP {
 		$result='';
 
 		$whichs=array( 'test' , 'prod' );
-		$wheres=array( 'skyserversw' , 'casjobs' , 'odbc' );
+		$wheres=array( 'skyserverws' , 'casjobs' );
+		$displays=array( 'div' , 'iframe' );
 		
 		$webroot = $this->dir_uri;
+		
 		$which = ( !empty( $atts) && array_key_exists( 'which' , $atts ) && 
-			in_array( $atts['which'] , $whichs ) ) ? $atts['which'] : 'test' ; 
+			in_array( $atts['which'] , $whichs ) ) ? $atts['which'] : $whichs[0] ; 
 		$where = ( !empty( $atts) && array_key_exists( 'where' , $atts ) && 
-			in_array( $atts['where'] , $wheres ) ) ? $atts['where'] : 'skyserverws' ; 
-		$dataiframe = ( !empty( $atts) && array_key_exists( 'iframe' , $atts ) ) ? 'data-sqls-iframe="true"' : 'data-sqls-iframe="false"' ; 
+			in_array( $atts['where'] , $wheres ) ) ? $atts['where'] : $wheres[0] ;
+		$display = ( !empty( $atts) && array_key_exists( 'display' , $atts ) && 
+			in_array( $atts['display'] , $displays ) ) ? $atts['display'] : $displays[0] ; 
 		
 		//Shortcode loads scripts and styles
 		wp_enqueue_script( 'sqlsearchwp-script' );
@@ -119,7 +122,7 @@ final class SQLSearchWP {
 		
 		//Content 
 		$result .= <<< EOT
-<div id="sqls-container" class="sqls-wrap" data-sqls-webroot="$webroot" data-sqls-which="$which" data-sqls-where="$where" $dataiframe >
+<div id="sqls-container" class="sqls-wrap" data-sqls-webroot="$webroot" data-sqls-which="$which" data-sqls-where="$where" data-sqls-display="$display" >
 <div class="row">
 <div class="col-lg-12">
 <div class="sqls-messages-wrap">
@@ -127,11 +130,11 @@ final class SQLSearchWP {
 </div>
 </div>
 <div class="col-xs-12">
-<div class="sqls-instructions-wrap well"> 
+<div class="sqls-instructions-wrap well well-sm"> 
 <h2><a role="button" data-toggle="collapse" href="#sqls-instructions" aria-expanded="true" aria-controls="sqls-instructions">Instructions</a></h2>
-<div class="sqls-instructions collapse"></div> 
+<div id="sqls-instructions" class="sqls-instructions collapse"></div> 
 </div>
-<div id="sqls-form-wrap" class="sqls-form-wrap well"> 
+<div id="sqls-form-wrap" class="sqls-form-wrap well well-sm"> 
 <h2><a role="button" data-toggle="collapse" href="#sqls-form" aria-expanded="true" aria-controls="sqls-form">SQL Search</a></h2>
 <div class="form sqls-form collapse show">
 <form id="sqls-form">
@@ -150,10 +153,9 @@ final class SQLSearchWP {
 </div>
 </div>
 <div class="col-xs-12">
-<div class="sqls-results-wrap well"> 
+<div class="sqls-results-wrap well well-sm"> 
 <h2><a role="button" data-toggle="collapse" href="#sqls-results" aria-expanded="false" aria-controls="sqls-results">Results</a></h2>
-<div id="sqls-results" class="sqls-results collapse">
-</div>
+<div id="sqls-results" class="sqls-results collapse"></div>
 </div>
 </div>
 </div>

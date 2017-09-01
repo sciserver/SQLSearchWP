@@ -1,4 +1,4 @@
-/*! sqlsearchwp - v1.0.0 - by:1.0.0 - license: - 2017-08-23 */+function ($) {
+/*! sqlsearchwp - v1.0.0 - by:1.0.0 - license: - 2017-09-01 */+function ($) {
   'use strict';
 
   // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
@@ -1702,7 +1702,7 @@
 
 	var SQLSDEBUG = true;
 
-	var skyserverws = 'http://skyserver.sdss.org/dr14/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd=';
+	var skyserverws = 'http://skyserver.sdss.org/public/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd=';
 	
 	var sqlsearchwp = {
 
@@ -1721,8 +1721,7 @@
 		
 		wheres: {
 			'skyserverws': 'http://skyserver.sdss.org/dr14/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd='
-			//'odbc',
-			//'casjobs',
+			//'casjobs'
 		},
 		
 		query: 
@@ -1760,6 +1759,7 @@
 			$( sqlsearchwp.context ).on( "click" , "#sqls-submit" , sqlsearchwp.doSubmit );
 			$( sqlsearchwp.context ).on( "click" , "#sqls-syntax" , sqlsearchwp.doSyntax );
 			$( sqlsearchwp.context ).on( "click" , "#sqls-reset" , sqlsearchwp.doReset );
+			$( sqlsearchwp.context ).on( "click" , "#sqls-reset" , sqlsearchwp.doReset );
 			
 		},
 		
@@ -1773,22 +1773,34 @@
 			
 			// Get target db from form data
 			var where = $( sqlsearchwp.context ).data('sqls-where');
+			var display = $( sqlsearchwp.context ).data('sqls-display');
 			var query = sqlsearchwp.wheres[where] +
 				encodeURI( $( '#sqls-query' ).val() ) +
 				'&syntax=NoSyntax';
-				
-			//send query from form to skyserverws and listen for return
-			var xhttp;
-			xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (this.readyState === 4 && this.status === 200) {
-					var response = this.responseText;
-					sqlsearchwp.showResults( response , false , true );
-					sqlsearchwp.showForm( '' , true , false );
-				}
-			};
-			xhttp.open("GET", query , true);
-			xhttp.send();
+			
+			if ( display === 'div' ) {				
+				//send query from form to skyserverws and listen for return
+				var xhttp;
+				xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState === 4 && this.status === 200) {
+						var response = this.responseText;
+						response = response.replace(/.*<body.*?>/i , "");
+						response = response.replace(/<\/body.*/i , "");
+
+						sqlsearchwp.showResults( response , false , true );
+						sqlsearchwp.showForm( '' , true , false );
+					}
+				};
+				xhttp.open("GET", query , true);
+				xhttp.send();
+			} else if ( display === 'iframe' ) {
+				sqlsearchwp.showResults( '' , false , true);
+				$('#sqls-results').append('<div class="embed-responsive embed-responsive-4by3"><iframe  class="embed-responsive-item" src="' + query + '" name="sqls-iframe" id="sqls-iframe"></iframe></div>');
+				sqlsearchwp.showForm( '' , true , false );
+			} else {
+				console.log( "Display type not supported: " + display + "." );
+			}
 			
 		},
 		
@@ -1885,7 +1897,8 @@
 		showInstructions: function( instructions ) {
 			var instContainer = $( '.sqls-instructions' )[0];
 			var instWrapper = $( '.sqls-instructions-wrap' )[0];
-			
+			var where = $( sqlsearchwp.context ).data('sqls-where');
+
 			var xhttp;
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
@@ -1894,7 +1907,7 @@
 					$( instContainer ).html(response);
 				}
 			};
-			xhttp.open("GET", instructions + 'instructions-test.txt' , true);
+			xhttp.open("GET", instructions + 'instructions-' + where + '.txt' , true);
 			xhttp.send();
 		},
 		
@@ -1906,13 +1919,6 @@
 			var query = sqlsearchwp.query[ $( context ).data('sqls-which') ];
 			
 			$( '#sqls-query' ).prop( 'value' , query );
-			/*/
-			if ( show === true ) {
-				$( container ).addClass('collapse in');
-			} else {
-				$( container ).removeClass('in');
-			}
-			/*/
 			sqlsearchwp.doCollapse( '#sqls-form-wrap>h2>a:[data-toggle]', container, show );
 			
 		},
