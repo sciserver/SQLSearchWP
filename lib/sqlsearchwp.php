@@ -23,6 +23,10 @@ final class SQLSearchWP {
 	public $css_uri = '';
 	public $js_uri = '';
 	public $bootstrap_uri = '';
+	
+	public $whichs=array( );
+	public $displays=array( );
+	public $wheres=array( );
 
 	/**
 	 * Returns the instance.
@@ -95,33 +99,34 @@ final class SQLSearchWP {
 
 	public function sqlsearchwp_shortcode( $atts = array() ) {
 
-		$result='';
-
-		$whichs=array( 'test' , 'prod' );
-		$wheres=array( 'skyserverws' , 'casjobs' );
-		$displays=array( 'div' , 'iframe' );
-		
 		$webroot = $this->dir_uri;
 		
 		$which = ( !empty( $atts) && array_key_exists( 'which' , $atts ) && 
-			in_array( $atts['which'] , $whichs ) ) ? $atts['which'] : $whichs[0] ; 
+			in_array( $atts['which'] , $this->whichs ) ) ? $atts['which'] : $this->whichs[0] ; 
 		$where = ( !empty( $atts) && array_key_exists( 'where' , $atts ) && 
-			in_array( $atts['where'] , $wheres ) ) ? $atts['where'] : $wheres[0] ;
+			in_array( $atts['where'] , $this->wheres ) ) ? $atts['where'] : $this->wheres[0] ;
 		$display = ( !empty( $atts) && array_key_exists( 'display' , $atts ) && 
-			in_array( $atts['display'] , $displays ) ) ? $atts['display'] : $displays[0] ; 
+			in_array( $atts['display'] , $this->displays ) ) ? $atts['display'] : $this->displays[0] ; 
 		
 		//Shortcode loads scripts and styles
 		wp_enqueue_script( 'sqlsearchwp-script' );
 		wp_enqueue_style( 'sqlsearchwp-style' );
+		
 		if ( defined( 'SQLS_DEVELOP' ) && SQLS_DEVELOP ) 
 			wp_enqueue_script( 'bootstrap' );
 		else
 			wp_enqueue_script( 'bootstrap-min' );
-		
-		//{$foo->bar[1]}
-		
+				
+		return $this->getForm( $which , $display , $webroot , $where );
+	}
+
+	/**
+	 * Generate HTML for this form
+	 */
+	public function getForm( $which , $display , $webroot , $where ) {
+
 		//Content 
-		$result .= <<< EOT
+		$result = <<< EOT
 <div id="sqls-container" class="sqls-wrap" data-sqls-webroot="$webroot" data-sqls-which="$which" data-sqls-where="$where" data-sqls-display="$display" >
 <div class="row">
 <div class="col-lg-12">
@@ -137,6 +142,9 @@ final class SQLSearchWP {
 <div id="sqls-form-wrap" class="sqls-form-wrap well well-sm"> 
 <h2><a role="button" data-toggle="collapse" href="#sqls-form" aria-expanded="true" aria-controls="sqls-form">SQL Search</a></h2>
 <div class="form sqls-form collapse show">
+EOT;
+		$result .= <<< EOT
+<!-- Query builder form goes here -->
 <form id="sqls-form">
 <input type="hidden" name="searchtool" value="SQL">
 <input type="hidden" name="TaskName" value="Skyserver.Search.SQL">
@@ -161,7 +169,6 @@ final class SQLSearchWP {
 </div>
 </div>
 EOT;
-
 		return $result;
 	}
 
@@ -213,6 +220,21 @@ EOT;
 		$this->css_uri = trailingslashit( $this->dir_uri . 'css' );
 		$this->js_uri  = trailingslashit( $this->dir_uri . 'js'  );
 		$this->bootstrap_uri  = trailingslashit( $this->dir_uri . 'vendor/bootstrap/dist/js'  );
+		
+		$this->whichs=array( 
+			'test' , 
+			'freeform' , 
+			'searchform' 
+		);
+		$this->displays=array( 
+			'div' , 
+			'iframe' 
+		);
+		$this->wheres=array( 
+			'skyserverws' , 
+			'casjobs' 
+		);
+
 	}
 
 	/**

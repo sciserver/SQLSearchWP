@@ -1,4 +1,4 @@
-/*! sqlsearchwp - v1.0.0 - by:1.0.0 - license: - 2017-09-01 */+function ($) {
+/*! sqlsearchwp - v1.0.0 - by:1.0.0 - license: - 2017-09-06 */+function ($) {
   'use strict';
 
   // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
@@ -1702,8 +1702,6 @@
 
 	var SQLSDEBUG = true;
 
-	var skyserverws = 'http://skyserver.sdss.org/public/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd=';
-	
 	var sqlsearchwp = {
 
 		context: '#sqls-container',

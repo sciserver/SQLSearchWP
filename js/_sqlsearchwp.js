@@ -16,8 +16,6 @@
 
 	var SQLSDEBUG = true;
 
-	var skyserverws = 'http://skyserver.sdss.org/public/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd=';
-	
 	var sqlsearchwp = {
 
 		context: '#sqls-container',
