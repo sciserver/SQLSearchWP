@@ -20,6 +20,7 @@ final class SQLSearchWP {
 	//public $admin_dir = '';
 	public $lib_dir = '';
 	//public $templates_dir = '';
+	public $includes_dir = '';
 	public $css_uri = '';
 	public $js_uri = '';
 	public $bootstrap_uri = '';
@@ -101,10 +102,8 @@ final class SQLSearchWP {
 
 		$webroot = $this->dir_uri;
 		
-		$which = ( !empty( $atts) && array_key_exists( 'which' , $atts ) && 
-			in_array( $atts['which'] , $this->whichs ) ) ? $atts['which'] : $this->whichs[0] ; 
-		$where = ( !empty( $atts) && array_key_exists( 'where' , $atts ) && 
-			in_array( $atts['where'] , $this->wheres ) ) ? $atts['where'] : $this->wheres[0] ;
+		$which = ( !empty( $atts) && array_key_exists( 'form' , $atts ) && 
+			in_array( $atts['form'] , $this->whichs ) ) ? $atts['form'] : $this->whichs[0] ; 
 		$display = ( !empty( $atts) && array_key_exists( 'display' , $atts ) && 
 			in_array( $atts['display'] , $this->displays ) ) ? $atts['display'] : $this->displays[0] ; 
 		
@@ -117,58 +116,20 @@ final class SQLSearchWP {
 		else
 			wp_enqueue_script( 'bootstrap-min' );
 				
-		return $this->getForm( $which , $display , $webroot , $where );
+		return $this->getForm( $which , $display , $webroot );
 	}
 
 	/**
 	 * Generate HTML for this form
 	 */
-	public function getForm( $which , $display , $webroot , $where ) {
+	public function getForm( $which , $display , $webroot ) {
 
 		//Content 
-		$result = <<< EOT
-<div id="sqls-container" class="sqls-wrap" data-sqls-webroot="$webroot" data-sqls-which="$which" data-sqls-where="$where" data-sqls-display="$display" >
-<div class="row">
-<div class="col-lg-12">
-<div class="sqls-messages-wrap">
-<div class="sqls-messages"></div>
-</div>
-</div>
-<div class="col-xs-12">
-<div class="sqls-instructions-wrap well well-sm"> 
-<h2><a role="button" data-toggle="collapse" href="#sqls-instructions" aria-expanded="true" aria-controls="sqls-instructions">Instructions</a></h2>
-<div id="sqls-instructions" class="sqls-instructions collapse"></div> 
-</div>
-<div id="sqls-form-wrap" class="sqls-form-wrap well well-sm"> 
-<h2><a role="button" data-toggle="collapse" href="#sqls-form" aria-expanded="true" aria-controls="sqls-form">SQL Search</a></h2>
-<div class="form sqls-form collapse show">
-EOT;
-		$result .= <<< EOT
-<!-- Query builder form goes here -->
-<form id="sqls-form">
-<input type="hidden" name="searchtool" value="SQL">
-<input type="hidden" name="TaskName" value="Skyserver.Search.SQL">
-<input type="hidden" name="syntax" value="Syntax">
-<input type="hidden" name="ReturnHtml" value="true">
-<input type="hidden" name="format" value="html">
-<input type="hidden" name="TableName" value="">
-<textarea id="sqls-query" name="cmd" class="sqls-query" rows=10 cols=60></textarea><br>
-<button id="sqls-submit" name="sqls-submit" class="sqls-submit btn btn-success">Submit</button>
-<button id="sqls-syntax" name="sqls-syntax" class="sqls-syntax btn btn-warning">Check Syntax</button>
-<button id="sqls-reset" name="sqls-reset" class="sqls-reset btn btn-danger">Reset</button>
-</form>
-</div>
-</div>
-</div>
-<div class="col-xs-12">
-<div class="sqls-results-wrap well well-sm"> 
-<h2><a role="button" data-toggle="collapse" href="#sqls-results" aria-expanded="false" aria-controls="sqls-results">Results</a></h2>
-<div id="sqls-results" class="sqls-results collapse"></div>
-</div>
-</div>
-</div>
-</div>
-EOT;
+		$result = '<div id="sqls-container" class="sqls-wrap" data-sqls-webroot="' . $webroot . '" data-sqls-which="' . $which . '" data-sqls-display="' . $display . '" >';
+		
+		require($this->includes_dir . 'form-'. $which . '.php'); 
+		
+		$result .= '</div>';
 		return $result;
 	}
 
@@ -215,6 +176,7 @@ EOT;
 		$this->lib_dir       = trailingslashit( $this->dir_path . 'lib'       );
 		//$this->admin_dir     = trailingslashit( $this->dir_path . 'admin'     );
 		//$this->templates_dir = trailingslashit( $this->dir_path . 'templates' );
+		$this->includes_dir = trailingslashit( $this->dir_path . 'includes' );
 
 		// Plugin directory URIs.
 		$this->css_uri = trailingslashit( $this->dir_uri . 'css' );

@@ -26,26 +26,30 @@
 			'danger',
 		],
 		
-		whichs: [
-			'test',
-			'prod',
+		buttons: [
+			'submit',
+			'images',
+			'syntax',
+			'clear'
 		],
 		
-		wheres: {
-			'skyserverws': 'http://skyserver.sdss.org/dr14/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd='
-			//'casjobs'
-		},
+		whichs: [
+			'test',
+			'freeform',
+			'searchform'
+		],
 		
-		query: 
-			{ test:'SELECT TOP 10 '+
-			   'p.objid,p.ra,p.dec,p.u,p.g,p.r,p.i,p.z, '+
-			   'p.run, p.rerun, p.camcol, p.field, '+
-			   's.specobjid, s.class, s.z as redshift, '+
-			   's.plate, s.mjd, s.fiberid '+
+		query: { 
+			test: 
+				'SELECT TOP 10 '+
+				'p.objid,p.ra,p.dec,p.u,p.g,p.r,p.i,p.z, '+
+				'p.run, p.rerun, p.camcol, p.field, '+
+				's.specobjid, s.class, s.z as redshift, '+
+				's.plate, s.mjd, s.fiberid '+
 			'FROM PhotoObj AS p '+
-			   'JOIN SpecObj AS s ON s.bestobjid = p.objid '+
+				'JOIN SpecObj AS s ON s.bestobjid = p.objid '+
 			'WHERE '+
-			   'p.u BETWEEN 0 AND 19.6 '+
+				'p.u BETWEEN 0 AND 19.6 '+
 			'AND g BETWEEN 0 AND 20' ,
 			prod: ''
 			},
@@ -59,19 +63,67 @@
 			var which = $( sqlsearchwp.context ).data('sqls-which');
 			
 			// Show the Search Page
-			this.showMessages( 'Welcome' , 'Please enjoy this form.' , 'info' , false );
+			//this.showMessage( 'Welcome' , 'Please enjoy this form.' , 'info' , false );
 			this.showInstructions( webroot+"includes/" );
 			this.showForm( sqlsearchwp.context , false , true );
 			this.showResults( '' , false , false );
 			
 			// Prevent form submitting/reloading page
 			$( sqlsearchwp.context ).on( "submit" , "form#sqls-form" , function( e ){ e.preventDefault(); });
+			$( sqlsearchwp.context ).on( "submit" , "form#sqls-searchform" , function( e ){ e.preventDefault(); });
 			
 			// Add (delegated) click event handlers to buttons
 			$( sqlsearchwp.context ).on( "click" , "#sqls-submit" , sqlsearchwp.doSubmit );
 			$( sqlsearchwp.context ).on( "click" , "#sqls-syntax" , sqlsearchwp.doSyntax );
 			$( sqlsearchwp.context ).on( "click" , "#sqls-reset" , sqlsearchwp.doReset );
-			$( sqlsearchwp.context ).on( "click" , "#sqls-reset" , sqlsearchwp.doReset );
+			if ( which ==="searchform" ) {
+				$( sqlsearchwp.context ).on( "click" , "#sqls-images" , sqlsearchwp.doSubmit );
+				$( sqlsearchwp.context ).on( "change" , "#sqls-inregion" , sqlsearchwp.toggleFootprint );
+				$( sqlsearchwp.context ).on( "change" , "#sqls-forobjects" , sqlsearchwp.toggleRedshifts );
+				$( sqlsearchwp.context ).on( "click" , "#sqls-fpcheck" , sqlsearchwp.doFootprint );
+				$( sqlsearchwp.context ).on( "click" , "#sqls-generate" , sqlsearchwp.doGenerate );
+				$( 'form#sqls-searchform' ).on( "change" , "select" , sqlsearchwp.doUpdate );
+				$( 'form#sqls-searchform' ).on( "change" , "input" , sqlsearchwp.doUpdate );
+			}
+			
+		},
+		
+		/**
+		 * @summary Toggle the Reshifts form
+		 * 
+		 * @param Object e Event Object
+		**/
+		toggleRedshifts: function( e ) {
+
+		
+			$('#sqls-forwrapper').collapse();
+			$('#sqls-returnspectra').collapse();
+
+			if ( $( ':selected' , this).val() === 'only objects' ) {
+				$('#sqls-forwrapper').collapse('show');
+				$('#sqls-returnspectra').collapse('show');
+			} else {
+				$('#sqls-forwrapper').collapse('hide');
+				$('#sqls-returnspectra').collapse('hide');
+			}
+			
+		},
+		
+		/**
+		 * @summary Toggle the Footprint form
+		 * 
+		 * @param Object e Event Object
+		**/
+		toggleFootprint: function( e ) {
+
+			
+			$('#sqls-fpwrapper').collapse();
+
+			if ( $( ':selected' , this).val() === 'around' ) {
+				$('#sqls-fpwrapper').collapse('show');
+			} else {
+				$('#sqls-fpwrapper').collapse('hide');
+			}
 			
 		},
 		
@@ -81,14 +133,11 @@
 		 * @param Object e Event Object
 		**/
 		doSubmit: function( e ) {
-			if (SQLSDEBUG) { console.log('doSubmit'); }
 			
 			// Get target db from form data
-			var where = $( sqlsearchwp.context ).data('sqls-where');
 			var display = $( sqlsearchwp.context ).data('sqls-display');
-			var query = sqlsearchwp.wheres[where] +
-				encodeURI( $( '#sqls-query' ).val() ) +
-				'&syntax=NoSyntax';
+			var _query = e.currentTarget.dataset.sqlsSubmitto +
+				encodeURI( $( '#sqls-query' ).val() );
 			
 			if ( display === 'div' ) {				
 				//send query from form to skyserverws and listen for return
@@ -104,11 +153,11 @@
 						sqlsearchwp.showForm( '' , true , false );
 					}
 				};
-				xhttp.open("GET", query , true);
+				xhttp.open("GET", _query , true);
 				xhttp.send();
 			} else if ( display === 'iframe' ) {
 				sqlsearchwp.showResults( '' , false , true);
-				$('#sqls-results').append('<div class="embed-responsive embed-responsive-4by3"><iframe  class="embed-responsive-item" src="' + query + '" name="sqls-iframe" id="sqls-iframe"></iframe></div>');
+				$('#sqls-results').append('<div class="embed-responsive embed-responsive-4by3"><iframe  class="embed-responsive-item" src="' + _query + '" name="sqls-iframe" id="sqls-iframe"></iframe></div>');
 				sqlsearchwp.showForm( '' , true , false );
 			} else {
 				console.log( "Display type not supported: " + display + "." );
@@ -117,30 +166,200 @@
 		},
 		
 		/**
-		 * @summary Sends form data to skyserverws for syntax review
+		 * @summary Change button to "Update Query" when parameters change and
+		 *   query has already been generated once.
 		 * 
 		 * @param Object e Event Object
 		**/
-		doSyntax: function( e ) {
-			if (SQLSDEBUG) { console.log('doSyntax'); }
-			// Get target db from form data
-			var where = $( sqlsearchwp.context ).data('sqls-where');
-			var query = sqlsearchwp.wheres[where] +
-				encodeURI( $( '#sqls-query' ).val() ) +
-				'&syntax=Syntax';
+		doUpdate: function( e ) {
+			if (SQLSDEBUG) { console.log( $( '#sqls-generate' ).html() ); }
+
+			if ( $( '#sqls-query' ).html().trim() !== '' ){
+				$( '#sqls-generate' ).html('Update Query');
+			} else {
+				$( '#sqls-generate' ).html('Generate Query');
+			}
+		},
+		
+		/**
+		 * @summary Generates SQL query based on SearchForm
+		 * 
+		 * @param Object e Event Object
+		**/
+		doGenerate: function( e ) {
+			
+			var _query = 'select ';
+			var _ok=true;
+			var _fields = [];
+			var _from=[];
+			var _where = [];
+			
+			// count  or top ##, and fields to return
+			switch ( $('input:checked' ,'div.returnobj').val() ){
+				case ( 'count' ):
+					_query += 'count(*) as count ';
+					break;
+				case ( 'all' ):
+					break;
+				default:
+					_query += 'top '+ $('input:checked' ,'div.returnobj').val() +' ';
+					$('input:checked' ,'div.returnimg').each( function( index ){
+						_fields.push( $( this ).val() );
+					} );
+					break;
+			}
+			
+			// showme
+			// quasars: photoobj p, specobj s where p.objid=s.bestobjid and (s.class = 'QSO')
+			var showme=$( 'option:selected' , '#sqls-showme' ).val();
+			switch ( showme ){
+				case ('quasar'):
+					if ( _from.indexOf( 'photoobj p' ) !== -1 ) {_from.push( 'photoobj p' ) ; }
+					if ( _from.indexOf( 'specobj s' ) !== -1 ) {_from.push( 'specobj s' ) ; }
+					if ( _where.indexOf( 'p.objid=s.bestobjid' ) !== -1 ) { _where.push( 'p.objid=s.bestobjid' ) ; }
+					if ( _where.indexOf( "(s.class = 'QSO')" ) !== -1 ) { _where.push( "(s.class = 'QSO')" ) ; }
+					break;
+				default:
+					if ( _from.indexOf( $( 'option:selected' , '#sqls-showme' ).val() ) !== -1 ) {_from.push( $( 'option:selected' , '#sqls-showme' ).val() ) ; }
+					break;
+			}
+			
+			//inregion
+			if ( $( 'option:selected' , '#sqls-inregion' ).val() === 'around' ){
 				
-			//send query from form to skyserverws and listen for return
+				// error checking
+				[ '#sqls-ra' , '#sqls-dec' , '#sqls-radius'].forEach( function( e , i , a ) {
+					if ( $( e , '#sqls-fpwrapper' ).val().trim().length === 0 ) {
+						sqlsearchwp.showMessage( 'Input error' , 'Neither ra, dec, or radius cannot be blank when searching the region "around" ' , 'danger' , false );
+						$( e , '#sqls-fpwrapper' ).focus();
+						_ok=false;
+					}
+				});
+				if (_ok) {
+					var thisfrom = 'dbo.fgetNearByObjEq('+ $( '#sqls-ra' , '#sqls-fpwrapper' ).val() +','+ $( '#sqls-dec' , '#sqls-fpwrapper' ).val() +','+ $( '#sqls-radius' , '#sqls-fpwrapper' ).val() +') n ';
+					if ( _from.indexOf( thisfrom ) !== -1 ) {_from.push( thisfrom ) ; }
+					if ( _where.indexOf( 'p.objid=n.objid' ) !== -1 ) { _where.push( 'p.objid=n.objid' ) ; }
+				}
+			}
+			
+			// withmags
+			['u','g','r','i','z'].forEach( function( e , i , a ){
+				if ( $( '#sqls-' + e + 'min' , '.withmags' ).val().trim().length > 0 ) {
+					_where.push( 'p.' + e + ' > ' +$( '#sqls-'+e+'min' , '.withmags' ).val() );
+				}
+			});
+			['u','g','r','i','z'].forEach( function( e , i , a ){
+				if ( $( '#sqls-' + e + 'max' , '.withmags' ).val().trim().length > 0 ) {
+					_where.push( 'p.' + e + ' < ' +$( '#sqls-'+e+'min' , '.withmags' ).val() );
+				}
+			});
+			
+			// andcolors
+			['ug','gr','ri','iz','ur'].forEach( function( e , i , a ){
+				if ( $( '#sqls-' + e + 'min' , '.withmags' ).val().trim().length > 0 ) {
+					_where.push( 'p.' + e + ' > ' +$( '#sqls-'+e+'min' , '.withmags' ).val() );
+				}
+			});
+			['ug','gr','ri','iz','ur'].forEach( function( e , i , a ){
+				if ( $( '#sqls-' + e + 'max' , '.withmags' ).val().trim().length > 0 ) {
+					_where.push( 'p.' + e + ' < ' +$( '#sqls-'+e+'min' , '.withmags' ).val() );
+				}
+			});
+			
+			//for object with/out spectra
+			if ( $( 'option:selected' , '#sqls-forobjects' ).val() === 'only objects' ){
+				// error checking
+				[ '#sqls-redshiftmin' , '#sqls-redshiftmax' ].forEach( function( e , i , a ) {
+					if ( $( e , '#sqls-forwrapper' ).val().trim().length === 0 ) {
+						sqlsearchwp.showMessage( 'Input error' , 'Redshift max and min cannot be blank when specifying "only objects with spectra" ' , 'danger' , false );
+						$( e , '#sqls-forwrapper' ).focus();
+						_ok=false;
+					}
+				});
+				if (_ok) {
+					if ( _from.indexOf( 'specobj s' ) !== -1 ) {_from.push( 'specobj s' ) ; }
+					if ( _where.indexOf( 'p.objid=s.bestobjid' ) !== -1 ) { _where.push( 'p.objid=s.bestobjid' ) ; }
+					var thiswhere = 's.z BETWEEN ' + $( '#sqls-redshiftmin' , '#sqls-forwrapper' ).val() + ' AND ' + $( '#sqls-redshiftmax' , '#sqls-forwrapper' ).val();
+					if ( _where.indexOf( thiswhere ) !== -1 ) { _where.push( thiswhere ) ; }
+					['redshift','spectrumid','plate'].forEach( function( e , i , a ){
+						if ( $( '#specdata' + e , '.returnspectra' ).val().trim().length > 0 ) {
+							if ( _fields.indexOf( $( '#specdata' + e , '.returnspectra' ).val() ) !== -1 ) { _fields.push( '#specdata' + e , '.returnspectra' ).val() ) ; }
+						}
+					});
+				}
+			}
+			
+			if (_ok) {
+				_query += _fields.join(', ') + ' ';
+				_query += _from.join(', ') + ' ';
+				_query += ' where ' + _where.join(' and ') + ' ';
+				$( e.currentTarget.dataset.sqlsGeneratetoid ).html( _query );
+			}
+		
+		},
+		
+		/**
+		 * @summary Checks if RA, DEC, and Radius are in SDSS Footprint
+		 * 
+		 * @param Object e Event Object
+		**/
+		doFootprint: function( e ) {
+			
+			var _query = e.currentTarget.dataset.sqlsSubmitto +
+				'&ra=' + encodeURI( $( '#sqls-ra' , sqlsearchwp.context ).val() ) +
+				'&dec=' + encodeURI( $( '#sqls-dec' , sqlsearchwp.context ).val() ) +
+				'&radius=' + encodeURI( $( '#sqls-radius' , sqlsearchwp.context ).val() );
+			$('#sqls-fpresult').html('Working... ');
 			var xhttp;
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
 					var response = this.responseText;
-					sqlsearchwp.showResults( response , false , true );
-					//sqlsearchwp.showForm( '' , true , true );
+					$('#sqls-fpresult').html(response);
 				}
 			};
-			xhttp.open("GET", query , true);
+			xhttp.open("GET", _query , true);
 			xhttp.send();
+		
+		},
+		
+		/**
+		 * @summary Sends form data to skyserverws for syntax review
+		 * 
+		 * @param Object e Event Object
+		**/
+		doSyntax: function( e ) {
+			//if (SQLSDEBUG) { console.log('doSyntax'); }
+	
+			// Get target db from form data
+			var display = $( sqlsearchwp.context ).data('sqls-display');
+			var _query = e.currentTarget.dataset.sqlsSubmitto +
+				encodeURI( $( '#sqls-query' ).val() );
+
+			if ( display === 'div' ) {				
+				//send query from form to skyserverws and listen for return
+				var xhttp;
+				xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState === 4 && this.status === 200) {
+						var response = this.responseText;
+						sqlsearchwp.showResults( response , false , true );
+					}
+				};
+				xhttp.open("GET", _query, true);
+				xhttp.send();
+				
+			} else if ( display === 'iframe' ) {
+				
+				sqlsearchwp.showResults( '' , false , true);
+				$('#sqls-results').append('<div class="embed-responsive embed-responsive-4by3"><iframe  class="embed-responsive-item" src="' + _query + '" name="sqls-iframe" id="sqls-iframe"></iframe></div>');
+				sqlsearchwp.showForm( '' , true , false );
+				
+			} else {
+				
+				console.log( "Display type not supported: " + display + "." );
+				
+			}
 		},
 		
 		/**
@@ -149,7 +368,6 @@
 		 * @param Object e Event Object
 		**/
 		doReset: function( e ) {
-			if (SQLSDEBUG) { console.log('reset form'); }
 			// Reset query - don't do this while testing...
 			sqlsearchwp.showResults( '' , false , false );
 			sqlsearchwp.showForm( sqlsearchwp.context , false , true );
@@ -162,10 +380,6 @@
 			} else {
 				$(container).collapse('hide');
 			}
-			/*/
-				$( container ).addClass('collapse in');
-				$( container ).removeClass('in');
-			/*/
 		},
 		
 		/**
@@ -176,7 +390,7 @@
 		 * @param String $level One of info, warning, error
 		 * @param Boolean $append Append or replace current message(s)
 		**/
-		showMessages: function( title , msg , level , append ) {
+		showMessage: function( title , msg , level , append ) {
 			var msgContainer = $( '.sqls-messages' )[0];
 			var msgWrapper = $( '.sqls-messages-wrap' )[0];
 			
@@ -209,7 +423,7 @@
 		showInstructions: function( instructions ) {
 			var instContainer = $( '.sqls-instructions' )[0];
 			var instWrapper = $( '.sqls-instructions-wrap' )[0];
-			var where = $( sqlsearchwp.context ).data('sqls-where');
+			var which = $( sqlsearchwp.context ).data('sqls-which');
 
 			var xhttp;
 			xhttp = new XMLHttpRequest();
@@ -219,7 +433,7 @@
 					$( instContainer ).html(response);
 				}
 			};
-			xhttp.open("GET", instructions + 'instructions-' + where + '.txt' , true);
+			xhttp.open("GET", instructions + 'instructions-' + which + '.txt' , true);
 			xhttp.send();
 		},
 		
@@ -228,9 +442,9 @@
 			
 			var contents = ( append !== undefined && append ) ? $(container).html() : '' ;
 			
-			var query = sqlsearchwp.query[ $( context ).data('sqls-which') ];
+			//var _query = sqlsearchwp.query[ $( context ).data('sqls-which') ];
 			
-			$( '#sqls-query' ).prop( 'value' , query );
+			$( '#sqls-query' ).prop( 'value' , sqlsearchwp.query[ $( context ).data('sqls-which') ] );
 			sqlsearchwp.doCollapse( '#sqls-form-wrap>h2>a:[data-toggle]', container, show );
 			
 		},
@@ -248,13 +462,6 @@
 			
 			contents += ( results !== undefined ) ? results : '' ;
 			$(container).html( contents );
-			/*/
-			if ( show ) {
-				$( container ).addClass('collapse in');
-			} else {
-				$( container ).removeClass('in');
-			}
-			/*/
 			sqlsearchwp.doCollapse( '#sqls-results-wrap>h2>a:[data-toggle]', container, show );
 		},
 	};
@@ -263,7 +470,7 @@
 		if ( $( '#sqls-container' ).length === 1 ) {
 			sqlsearchwp.init(  );
 		} else {
-			if (SQLSDEBUG) { console.log('Error running sqlsearchwp.js. Only one "#sqls-container" expected.');}
+			if (SQLSDEBUG) { console.log('Error running sqlsearchwp.js. One and only one "#sqls-container" expected.');}
 		}
 	} );
 	
