@@ -1,4 +1,4 @@
-/*! sqlsearchwp - v1.0.0 - by:1.0.0 - license: - 2017-09-01 */+function ($) {
+/*! sqlsearchwp - v1.0.0 - by:1.0.0 - license: - 2018-01-05 */+function ($) {
   'use strict';
 
   // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
@@ -1716,6 +1716,7 @@
 		
 		whichs: [
 			'test',
+			'mpcorb',
 			'prod',
 		],
 		
@@ -1735,6 +1736,9 @@
 			'WHERE '+
 			   'p.u BETWEEN 0 AND 19.6 '+
 			'AND g BETWEEN 0 AND 20' ,
+			mpcorb:'select top 10 ra, dec '+
+			'FROM MPCORB..mpcorb'+
+			'WHERE a between 1.8 and 4.2' ,
 			prod: ''
 			},
 			

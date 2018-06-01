@@ -85,8 +85,6 @@ final class SQLSearchWP {
 		
 		//Scripts to be Registered, but not enqueued. This example requires jquery 
 		wp_register_script( 'sqlsearchwp-script', $this->js_uri . "sqlsearchwp.js" , array() , '1.0.0', true );
-		//wp_register_script( 'bootstrap-min', $this->bootstrap_uri . "bootstrap.min.js" , array( 'jquery' ), false , true );
-		//wp_register_script( 'bootstrap', $this->bootstrap_uri . "bootstrap.js" , array( 'jquery' ), false , true );
 		
 		//Styles to be Registered, but not enqueued
 		wp_register_style( 'sqlsearchwp-style', $this->css_uri . "sqlsearchwp.css" );
@@ -97,7 +95,7 @@ final class SQLSearchWP {
 
 		$result='';
 
-		$whichs=array( 'test' , 'prod' );
+		$whichs=array( 'test' , 'mpcorb' , 'prod' );
 		$wheres=array( 'skyserverws' , 'casjobs' );
 		$displays=array( 'div' , 'iframe' );
 		

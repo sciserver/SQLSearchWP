@@ -1,0 +1,3 @@
+Select how many asteroids to return, and whether you want the positions returned as RA & Dec, or as ecliptic latitude and longitude.
+
+Click Generate Query to create your query. Click Check Syntax to check the syntax of your query. Click Submit to submit your query.

@@ -28,11 +28,7 @@
 			'danger',
 		],
 		
-		whichs: [
-			'test',
-			'prod',
-		],
-		
+
 		wheres: {
 			'skyserverws': 'http://skyserver.sdss.org/dr14/en/tools/search/x_results.aspx?searchtool=SQL&TaskName=Skyserver.Search.SQL&ReturnHtml=true&format=html&cmd='
 			//'casjobs'
@@ -49,6 +45,9 @@
 			'WHERE '+
 			   'p.u BETWEEN 0 AND 19.6 '+
 			'AND g BETWEEN 0 AND 20' ,
+			mpcorb:'select top 10 ra, dec '+
+			'FROM MPCORB..mpcorb'+
+			'WHERE a between 1.8 and 4.2' ,
 			prod: ''
 			},
 			
